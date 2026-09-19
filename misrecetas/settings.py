@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-2#*549tdn&(t62r8etq0i_fw!%i_6+o2=^uu9$r5=bz_2zf+(&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['webb-recetas.onrender.com', 'localhost', '127.0.0.1', '*']
 
 
 # Application definition
