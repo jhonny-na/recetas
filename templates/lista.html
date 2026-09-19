@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mis Recetas 🔪</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍽️</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("{% static 'images/fondos.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        .overlay {
+            background: rgba(0, 0, 0, 0.65);
+            min-height: 100vh;
+            padding: 20px 0 40px;
+        }
+        .titulo-elegante {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-weight: 700;
+        }
+        .card-receta {
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.2s;
+            position: relative;
+        }
+        .card-receta:hover {
+            transform: scale(1.02);
+        }
+        .btn-categoria.active {
+            background-color: #2f7a4f;
+            color: #fff;
+            border-color: #2f7a4f;
+        }
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            margin-bottom: 25px;
+        }
+        .btn-favorito {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.55);
+            border: none;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2;
+        }
+        .contador-recetas {
+            font-size: 0.95rem;
+            opacity: 0.85;
+        }
+        .acciones-receta {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <div class="container text-white">
+            <div class="top-nav">
+                <h4 class="titulo-elegante mb-0">🍽️ Recetas De Catalina</h4>
+                <div class="d-flex gap-2">
+                    {% if request.session.autenticado %}
+                        <a href="{% url 'cerrar_sesion' %}" class="btn btn-outline-light btn-sm">Cerrar sesión</a>
+                    {% else %}
+                        <a href="{% url 'iniciar_sesion' %}" class="btn btn-outline-light btn-sm">Iniciar sesión</a>
+                    {% endif %}
+                    <a href="{% url 'inicio' %}" class="btn btn-outline-light btn-sm">← Inicio</a>
+                </div>
+            </div>
+
+            <div class="text-center mb-4">
+                {% if request.session.autenticado %}
+                    <a href="{% url 'agregar_receta' %}" class="btn btn-success btn-lg">+ Agregar nueva receta</a>
+                {% endif %}
+            </div>
+
+            <!-- Buscador + orden -->
+            <form method="GET" class="d-flex justify-content-center mb-2">
+                <div class="input-group" style="max-width: 640px;">
+                    <span class="input-group-text bg-white">🔍</span>
+                    <input type="text" name="q" class="form-control" placeholder="Buscar receta por nombre..." value="{{ query }}">
+                    <select name="orden" class="form-select" style="max-width: 190px;" onchange="this.form.submit()">
+                        <option value="recientes" {% if orden_actual == 'recientes' %}selected{% endif %}>Más recientes</option>
+                        <option value="nombre" {% if orden_actual == 'nombre' %}selected{% endif %}>Nombre (A-Z)</option>
+                        <option value="valoradas" {% if orden_actual == 'valoradas' %}selected{% endif %}>Mejor valoradas</option>
+                    </select>
+                    {% if categoria_actual %}<input type="hidden" name="categoria" value="{{ categoria_actual }}">{% endif %}
+                    {% if solo_favoritas %}<input type="hidden" name="favoritas" value="1">{% endif %}
+                    <button type="submit" class="btn btn-success">Buscar</button>
+                </div>
+            </form>
+
+            {% if query or categoria_actual or solo_favoritas %}
+            <div class="text-center mb-2">
+                <a href="{% url 'lista_recetas' %}" class="btn btn-outline-light btn-sm">✕ Limpiar filtros</a>
+            </div>
+            {% endif %}
+
+            <!-- Contador de recetas -->
+            <div class="text-center contador-recetas mb-3">
+                {{ total_recetas }} receta{{ total_recetas|pluralize }}
+            </div>
+
+            <!-- Categorías + favoritas (combinan con búsqueda y orden) -->
+            <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
+                <a href="?orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if solo_favoritas %}&favoritas=1{% endif %}"
+                   class="btn btn-outline-light btn-categoria {% if not categoria_actual %}active{% endif %}">Todas</a>
+
+                {% for valor, nombre in categorias %}
+                    <a href="?categoria={{ valor }}&orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if solo_favoritas %}&favoritas=1{% endif %}"
+                       class="btn btn-outline-light btn-categoria {% if categoria_actual == valor %}active{% endif %}">{{ nombre }}</a>
+                {% endfor %}
+
+                <a href="?orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if categoria_actual %}&categoria={{ categoria_actual }}{% endif %}{% if not solo_favoritas %}&favoritas=1{% endif %}"
+                   class="btn btn-outline-light btn-categoria {% if solo_favoritas %}active{% endif %}">⭐ Favoritas</a>
+            </div>
+
+            <!-- Tarjetas -->
+            <div class="row g-4">
+                {% for receta in recetas %}
+                <div class="col-md-4">
+                    <div class="card card-receta bg-dark text-white shadow-lg p-3">
+                        {% if request.session.autenticado %}
+                        <form method="POST" action="{% url 'toggle_favorito' receta.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-favorito" title="Marcar como favorita">
+                                {% if receta.favorito %}⭐{% else %}☆{% endif %}
+                            </button>
+                        </form>
+                        {% elif receta.favorito %}
+                            <span class="btn-favorito" style="cursor:default;">⭐</span>
+                        {% endif %}
+
+                        {% if receta.imagen %}
+                            <img src="{{ receta.imagen.url }}" class="img-fluid rounded mb-2" alt="{{ receta.nombre }}" style="height: 180px; width: 100%; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded mb-2 d-flex align-items-center justify-content-center bg-secondary bg-opacity-25" style="height: 180px;">
+                                <span style="font-size: 2.5rem;">🍽️</span>
+                            </div>
+                        {% endif %}
+
+                        <h4>
+                            <a href="{% url 'detalle_receta' receta.id %}" class="text-white text-decoration-none stretched-link">{{ receta.nombre }}</a>
+                        </h4>
+
+                        {% if receta.total_valoraciones > 0 %}
+                            <p class="mb-2 small">⭐ {{ receta.promedio_valoracion }} ({{ receta.total_valoraciones }} valoración{{ receta.total_valoraciones|pluralize:"es" }})</p>
+                        {% endif %}
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            <span class="badge bg-success">{{ receta.get_categoria_display }}</span>
+                            {% if receta.tiempo_preparacion %}
+                                <span class="badge bg-secondary">⏱️ {{ receta.tiempo_preparacion }}</span>
+                            {% endif %}
+                            {% if receta.dificultad %}
+                                <span class="badge bg-info text-dark">{{ receta.get_dificultad_display }}</span>
+                            {% endif %}
+                            {% if receta.porciones %}
+                                <span class="badge bg-dark border">🍽️ {{ receta.porciones }} porciones</span>
+                            {% endif %}
+                        </div>
+
+                        {% if request.session.autenticado %}
+                        <div class="d-flex gap-2 mt-2 flex-wrap acciones-receta">
+                            <a href="{% url 'editar_receta' receta.id %}" class="btn btn-primary btn-sm">Editar</a>
+                            <a href="{% url 'eliminar_receta' receta.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center">No se encontraron recetas.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

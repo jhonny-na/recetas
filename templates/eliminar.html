@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Eliminar Receta</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍽️</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("{% static 'images/fondo.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        .overlay {
+            background: rgba(0, 0, 0, 0.65);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .titulo-elegante {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <div class="card bg-dark text-white text-center p-4 shadow-lg" style="max-width: 480px; width: 100%; border-radius: 15px;">
+            {% if receta.imagen %}
+                <img src="{{ receta.imagen.url }}" class="rounded mb-3" alt="{{ receta.nombre }}"
+                     style="width: 100%; height: 200px; object-fit: cover;">
+            {% endif %}
+            <h2 class="titulo-elegante mb-2">¿Eliminar "{{ receta.nombre }}"?</h2>
+            <p class="text-white-50 mb-4">Esta acción no se puede deshacer.</p>
+            <form method="POST" class="d-flex justify-content-center gap-2 flex-wrap">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-lg">Sí, eliminar</button>
+                <a href="{% url 'lista_recetas' %}" class="btn btn-outline-light btn-lg">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
