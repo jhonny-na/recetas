@@ -5,12 +5,20 @@ from functools import wraps
 
 from django.conf import settings
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.db.models import Avg, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
-from .models import Receta, CATEGORIA_CHOICES, Valoracion
+from .models import (
+    Receta,
+    Valoracion,
+    CATEGORIA_CHOICES,
+    CHEF_CHOICES,
+    normalizar_nombre,
+    validar_nombre_completo,
+)
 from .forms import RecetaForm
 
 MAX_INTENTOS = 3
@@ -26,23 +34,51 @@ def requiere_login(vista):
     return wrapper
 
 
+def _volver(request):
+    """Vuelve a la página desde donde se hizo la acción (si es segura)."""
+    destino = request.POST.get('next') or request.META.get('HTTP_REFERER')
+    if destino and url_has_allowed_host_and_scheme(destino, allowed_hosts={request.get_host()}):
+        return redirect(destino)
+    return redirect('lista_recetas')
+
+
+def _buscar_voto_por_nombre(receta, nombre):
+    """
+    Busca un voto de la receta con ese nombre sin distinguir mayúsculas/minúsculas.
+    Se compara en Python para que también funcione con tildes y ñ (SQLite no lo hace bien).
+    """
+    clave = nombre.casefold()
+    for voto in receta.valoraciones.all():
+        if voto.nombre.casefold() == clave:
+            return voto
+    return None
+
+
 def inicio(request):
-    return render(request, 'inicio.html')
+    return render(request, 'inicio.html', {
+        'nombre_guardado': request.session.get('nombre_votante', ''),
+        'aviso_nombre': request.session.pop('aviso_nombre', None),
+    })
 
 
 def lista_recetas(request):
     query = request.GET.get('q', '').strip()
     categoria = request.GET.get('categoria', '')
+    chef = request.GET.get('chef', '')
     solo_favoritas = request.GET.get('favoritas', '')
     orden = request.GET.get('orden', 'recientes')
     if orden not in ('recientes', 'nombre', 'valoradas'):
         orden = 'recientes'
+    if chef not in dict(CHEF_CHOICES):
+        chef = ''
 
     recetas = Receta.objects.all()
     if query:
         recetas = recetas.filter(nombre__icontains=query)
     if categoria:
         recetas = recetas.filter(categoria=categoria)
+    if chef:
+        recetas = recetas.filter(chef=chef)
     if solo_favoritas:
         recetas = recetas.filter(favorito=True)
 
@@ -59,11 +95,15 @@ def lista_recetas(request):
     return render(request, 'lista.html', {
         'recetas': recetas,
         'categorias': CATEGORIA_CHOICES,
+        'chefs': CHEF_CHOICES,
         'query': query,
         'categoria_actual': categoria,
+        'chef_actual': chef,
         'solo_favoritas': solo_favoritas,
         'total_recetas': recetas.count(),
         'orden_actual': orden,
+        'nombre_guardado': request.session.get('nombre_votante', ''),
+        'aviso_nombre': request.session.pop('aviso_nombre', None),
     })
 
 
@@ -84,8 +124,49 @@ def detalle_receta(request, receta_id):
         'mi_puntaje': mi_puntaje,
         'nombre_guardado': request.session.get('nombre_votante', ''),
         'aviso': request.session.pop('aviso_voto', None),
+        'aviso_nombre': request.session.pop('aviso_nombre', None),
         'conflicto': request.session.pop('conflicto_voto', None),
     })
+
+
+@require_POST
+def cambiar_nombre(request):
+    """
+    Cambia el nombre del votante guardado en la sesión.
+    - Si viene corregir=1: es un error de tipeo, se corrige el nombre en los votos ya hechos.
+    - Si no: es otra persona usando el mismo navegador, se empieza sin votos previos.
+    """
+    nuevo = normalizar_nombre(request.POST.get('nombre', '')[:100])
+
+    try:
+        validar_nombre_completo(nuevo)
+    except ValidationError as e:
+        request.session['aviso_nombre'] = e.messages[0]
+        return _volver(request)
+
+    votos = request.session.get('votos', {})
+
+    if request.POST.get('corregir') == '1':
+        for receta_id, voto_id in list(votos.items()):
+            voto = Valoracion.objects.filter(id=voto_id).first()
+            if not voto:
+                votos.pop(receta_id, None)
+                continue
+            # Si ya existe otro voto con ese nombre en la receta, no se toca
+            choque = any(
+                v.nombre.casefold() == nuevo.casefold()
+                for v in voto.receta.valoraciones.exclude(id=voto.id)
+            )
+            if choque:
+                continue
+            voto.nombre = nuevo
+            voto.save()
+    else:
+        votos = {}
+
+    request.session['votos'] = votos
+    request.session['nombre_votante'] = nuevo
+    return _volver(request)
 
 
 @require_POST
@@ -103,7 +184,7 @@ def valorar_receta(request, receta_id):
         return redirect('detalle_receta', receta_id=receta.id)
 
     puntaje = request.POST.get('puntaje', '')
-    nombre = request.POST.get('nombre', '').strip()[:100]
+    nombre = normalizar_nombre(request.POST.get('nombre', '')[:100])
     confirmar = request.POST.get('confirmar') == '1'
 
     if not (puntaje.isdigit() and 1 <= int(puntaje) <= 5):
@@ -121,29 +202,36 @@ def valorar_receta(request, receta_id):
     else:
         nombre = nombre or request.session.get('nombre_votante', '')
         if not nombre:
-            request.session['aviso_voto'] = 'Escribe tu nombre para poder votar.'
-        else:
-            existente = Valoracion.objects.filter(receta=receta, nombre__iexact=nombre).first()
-            if existente:
-                if confirmar:
-                    # La persona confirmó que es ella: se cambia su valoración
-                    existente.puntaje = puntaje
-                    existente.save()
-                    votos[str(receta.id)] = existente.id
-                    request.session['votos'] = votos
-                    request.session['nombre_votante'] = existente.nombre
-                else:
-                    # Se le pregunta antes de cambiar
-                    request.session['conflicto_voto'] = {
-                        'nombre': existente.nombre,
-                        'actual': existente.puntaje,
-                        'puntaje': puntaje,
-                    }
-            else:
-                voto = Valoracion.objects.create(receta=receta, nombre=nombre, puntaje=puntaje)
-                votos[str(receta.id)] = voto.id
+            request.session['aviso_voto'] = 'Escribe tu nombre y apellido para poder votar.'
+            return redirect('detalle_receta', receta_id=receta.id)
+
+        try:
+            validar_nombre_completo(nombre)
+        except ValidationError as e:
+            request.session['aviso_voto'] = e.messages[0]
+            return redirect('detalle_receta', receta_id=receta.id)
+
+        existente = _buscar_voto_por_nombre(receta, nombre)
+        if existente:
+            if confirmar:
+                # La persona confirmó que es ella: se cambia su valoración
+                existente.puntaje = puntaje
+                existente.save()
+                votos[str(receta.id)] = existente.id
                 request.session['votos'] = votos
-                request.session['nombre_votante'] = nombre
+                request.session['nombre_votante'] = existente.nombre
+            else:
+                # Se le pregunta antes de cambiar
+                request.session['conflicto_voto'] = {
+                    'nombre': existente.nombre,
+                    'actual': existente.puntaje,
+                    'puntaje': puntaje,
+                }
+        else:
+            voto = Valoracion.objects.create(receta=receta, nombre=nombre, puntaje=puntaje)
+            votos[str(receta.id)] = voto.id
+            request.session['votos'] = votos
+            request.session['nombre_votante'] = voto.nombre
 
     return redirect('detalle_receta', receta_id=receta.id)
 
