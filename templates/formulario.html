@@ -88,10 +88,17 @@
                         {{ form.nombre }}
                         {% for e in form.nombre.errors %}<div class="error-campo">{{ e }}</div>{% endfor %}
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Categoría</label>
-                        {{ form.categoria }}
-                        {% for e in form.categoria.errors %}<div class="error-campo">{{ e }}</div>{% endfor %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Categoría</label>
+                            {{ form.categoria }}
+                            {% for e in form.categoria.errors %}<div class="error-campo">{{ e }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">👩‍🍳 ¿Quién la preparó?</label>
+                            {{ form.chef }}
+                            {% for e in form.chef.errors %}<div class="error-campo">{{ e }}</div>{% endfor %}
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4 mb-3">
