@@ -86,6 +86,20 @@
             gap: 16px;
             padding: 2px 0;
         }
+        .comentario {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+        }
+        .comentario .meta {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        .comentario .texto {
+            margin: 4px 0 0;
+            word-break: break-word;
+        }
     </style>
 </head>
 <body>
@@ -217,6 +231,54 @@
                 <h5 class="mt-3">⏱️ Preparación</h5>
                 <p>{{ receta.preparacion|linebreaksbr }}</p>
 
+                <!-- Comentarios -->
+                <hr class="my-4">
+                <h5 id="comentarios">💬 Comentarios ({{ comentarios|length }})</h5>
+
+                {% if aviso_comentario %}
+                    <div class="alert alert-warning py-2 small">{{ aviso_comentario }}</div>
+                {% endif %}
+
+                {% if nombre_guardado %}
+                    <form method="POST" action="{% url 'comentar_receta' receta.id %}" class="mb-3">
+                        {% csrf_token %}
+                        <label for="textoComentario" class="form-label small mb-1">
+                            Comentando como <strong>{{ nombre_guardado }}</strong>
+                        </label>
+                        <textarea name="texto" id="textoComentario" class="form-control" rows="3"
+                                  maxlength="500" required
+                                  placeholder="Escribe tu comentario (máximo 500 letras)...">{{ borrador_comentario }}</textarea>
+                        <button type="submit" class="btn btn-success btn-sm mt-2">Publicar comentario</button>
+                    </form>
+                {% else %}
+                    <div class="alert alert-secondary py-2 small d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <span>Para comentar necesitas poner tu nombre y apellido.</span>
+                        <button type="button" class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#modalNombre">
+                            ✏️ Poner mi nombre
+                        </button>
+                    </div>
+                {% endif %}
+
+                {% for c in comentarios %}
+                    <div class="comentario">
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <div class="meta">
+                                <strong>{{ c.nombre }}</strong> · {{ c.fecha|date:"d/m/Y H:i" }}
+                            </div>
+                            {% if c.id in mis_comentarios or request.session.autenticado %}
+                                <form method="POST" action="{% url 'borrar_comentario' c.id %}"
+                                      onsubmit="return confirm('¿Borrar este comentario?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-link btn-sm text-danger p-0">✕ Borrar</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                        <p class="texto">{{ c.texto|linebreaksbr }}</p>
+                    </div>
+                {% empty %}
+                    <p class="text-white-50 small">Aún no hay comentarios. ¡Sé la primera persona en comentar!</p>
+                {% endfor %}
+
                 <div class="d-flex gap-2 mt-3 flex-wrap">
                     <a href="{% url 'lista_recetas' %}" class="btn btn-outline-light">← Volver</a>
                     <button onclick="copiarEnlace()" class="btn btn-outline-light" id="btnCompartir">🔗 Compartir</button>
@@ -268,7 +330,7 @@
                             <div class="form-check mt-3">
                                 <input class="form-check-input" type="checkbox" name="corregir" value="1" id="checkCorregir" checked>
                                 <label class="form-check-label" for="checkCorregir">
-                                    Me equivoqué al escribirlo: corregir también mis votos anteriores
+                                    Me equivoqué al escribirlo: corregir también mis votos y comentarios anteriores
                                 </label>
                             </div>
                             <div class="form-text">
@@ -278,6 +340,13 @@
                     </div>
 
                     <div class="modal-footer">
+                        {% if nombre_guardado %}
+                        <button type="submit" formaction="{% url 'quitar_nombre' %}" formnovalidate
+                                class="btn btn-outline-danger me-auto"
+                                onclick="return confirm('¿Quitar tu nombre de este navegador? Ya no podrás votar ni comentar hasta ponerlo de nuevo. Tus votos y comentarios ya publicados se quedan con tu nombre: quítalos antes si no quieres que aparezcan.');">
+                            Quitar mi nombre
+                        </button>
+                        {% endif %}
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-success">Guardar nombre</button>
                     </div>
