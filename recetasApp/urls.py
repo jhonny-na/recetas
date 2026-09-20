@@ -13,4 +13,7 @@ urlpatterns = [
     path('favorito/<int:receta_id>/', views.toggle_favorito, name='toggle_favorito'),
     path('valorar/<int:receta_id>/', views.valorar_receta, name='valorar_receta'),
     path('cambiar-nombre/', views.cambiar_nombre, name='cambiar_nombre'),
+    path('quitar-nombre/', views.quitar_nombre, name='quitar_nombre'),
+    path('comentar/<int:receta_id>/', views.comentar_receta, name='comentar_receta'),
+    path('comentario/<int:comentario_id>/borrar/', views.borrar_comentario, name='borrar_comentario'),
 ]
