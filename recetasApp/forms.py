@@ -4,10 +4,14 @@ from .models import Receta
 class RecetaForm(forms.ModelForm):
     class Meta:
         model = Receta
-        fields = ['nombre', 'categoria', 'ingredientes', 'preparacion', 'imagen', 'tiempo_preparacion', 'porciones', 'dificultad']
+        fields = ['nombre', 'categoria', 'chef', 'ingredientes', 'preparacion', 'imagen', 'tiempo_preparacion', 'porciones', 'dificultad']
+        labels = {
+            'chef': '¿Quién la preparó?',
+        }
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'categoria': forms.Select(attrs={'class': 'form-select'}),
+            'chef': forms.Select(attrs={'class': 'form-select'}),
             'ingredientes': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
             'preparacion': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
             'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'}),
