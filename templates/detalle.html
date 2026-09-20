@@ -44,9 +44,16 @@
         .estrellas-interactivas .estrella.activa {
             color: #ffc107;
         }
+        .zona-nombre {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
         .saludo-nombre {
             font-size: 0.9rem;
             opacity: 0.85;
+            margin: 0;
         }
         .votantes-wrap {
             position: relative;
@@ -84,9 +91,15 @@
 <body>
     <div class="overlay">
         <div class="container text-white" style="max-width: 700px;">
-            {% if nombre_guardado %}
-                <p class="saludo-nombre mb-2">Hola, {{ nombre_guardado }} 👋</p>
-            {% endif %}
+
+            <div class="zona-nombre mb-2">
+                {% if nombre_guardado %}
+                    <p class="saludo-nombre">Hola, {{ nombre_guardado }} 👋</p>
+                {% endif %}
+                <button type="button" class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#modalNombre">
+                    ✏️ {% if nombre_guardado %}Cambiar nombre{% else %}Poner mi nombre{% endif %}
+                </button>
+            </div>
 
             <div class="card bg-dark text-white shadow-lg p-4">
                 {% if receta.imagen %}
@@ -99,6 +112,9 @@
 
                 <div class="d-flex flex-wrap gap-2 mb-2">
                     <span class="badge bg-success">{{ receta.get_categoria_display }}</span>
+                    {% if receta.chef %}
+                        <span class="badge bg-warning text-dark">👩‍🍳 {{ receta.chef }}</span>
+                    {% endif %}
                     {% if receta.tiempo_preparacion %}
                         <span class="badge bg-secondary">⏱️ {{ receta.tiempo_preparacion }}</span>
                     {% endif %}
@@ -171,12 +187,15 @@
                         <span class="estrella" data-valor="5">★</span>
                     </div>
 
-                    <div id="bloqueNombre" class="d-none mt-2" style="max-width: 360px;">
+                    <div id="bloqueNombre" class="d-none mt-2" style="max-width: 400px;">
                         <div class="input-group input-group-sm">
                             <input type="text" name="nombre" id="nombreInput" maxlength="100"
-                                   class="form-control" placeholder="Tu nombre para votar"
+                                   class="form-control" placeholder="Tu nombre y apellido"
                                    value="{{ nombre_guardado }}">
                             <button type="submit" class="btn btn-success">Enviar voto</button>
+                        </div>
+                        <div id="errorNombre" class="text-warning small mt-1 d-none">
+                            Escribe tu nombre y apellido (por ejemplo: Juan Pérez).
                         </div>
                     </div>
                 </form>
@@ -209,6 +228,72 @@
         </div>
     </div>
 
+    <!-- Ventana para cambiar el nombre -->
+    <div class="modal fade" id="modalNombre" tabindex="-1" aria-labelledby="modalNombreTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="post" action="{% url 'cambiar_nombre' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalNombreTitulo">
+                            {% if nombre_guardado %}Cambiar mi nombre{% else %}¿Cómo te llamas?{% endif %}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        {% if aviso_nombre %}
+                            <div class="alert alert-warning py-2">{{ aviso_nombre }}</div>
+                        {% endif %}
+
+                        <label for="inputNombre" class="form-label">Nombre y apellido</label>
+                        <input type="text"
+                               class="form-control"
+                               id="inputNombre"
+                               name="nombre"
+                               maxlength="100"
+                               required
+                               pattern="\S+(\s+\S+)+"
+                               title="Escribe tu nombre y apellido (por ejemplo: Juan Pérez)"
+                               placeholder="Ej: Juan Pérez"
+                               value="{{ nombre_guardado }}">
+                        <div class="form-text">
+                            Es obligatorio escribir el apellido para no confundirte con otra persona.
+                            "juan pérez" y "Juan Pérez" cuentan como el mismo nombre.
+                        </div>
+
+                        {% if nombre_guardado %}
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" name="corregir" value="1" id="checkCorregir" checked>
+                                <label class="form-check-label" for="checkCorregir">
+                                    Me equivoqué al escribirlo: corregir también mis votos anteriores
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Desmárcala si otra persona va a usar este navegador. Así empieza sin votos previos.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Guardar nombre</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% if aviso_nombre %}
+    <script>
+        // Si el nombre no era válido, se vuelve a abrir la ventana mostrando el aviso
+        new bootstrap.Modal(document.getElementById('modalNombre')).show();
+    </script>
+    {% endif %}
+
     <script>
         function copiarEnlace() {
             navigator.clipboard.writeText(window.location.href).then(function() {
@@ -226,8 +311,14 @@
         const puntajeInput = document.getElementById('puntajeInput');
         const nombreInput = document.getElementById('nombreInput');
         const bloqueNombre = document.getElementById('bloqueNombre');
+        const errorNombre = document.getElementById('errorNombre');
         const formValorar = document.getElementById('formValorar');
         const miPuntaje = parseInt(contenedorEstrellas.getAttribute('data-mi-puntaje')) || 0;
+
+        // Nombre y apellido: al menos dos palabras
+        function nombreValido(texto) {
+            return texto.trim().split(/\s+/).filter(Boolean).length >= 2;
+        }
 
         function pintarEstrellas(cantidad) {
             estrellas.forEach(function(estrella) {
@@ -266,8 +357,8 @@
                 puntajeInput.value = valor;
                 pintarEstrellas(valor);
 
-                // Solo pregunta el nombre si todavía no lo conocemos
-                if (nombreInput.value.trim() === '') {
+                // Solo pide el nombre si todavía no lo tenemos completo
+                if (!nombreValido(nombreInput.value)) {
                     bloqueNombre.classList.remove('d-none');
                     nombreInput.focus();
                     return;
@@ -281,8 +372,15 @@
         });
 
         formValorar.addEventListener('submit', function(e) {
-            if (parseInt(puntajeInput.value) === 0 || (miPuntaje === 0 && nombreInput.value.trim() === '')) {
+            if (parseInt(puntajeInput.value) === 0) {
                 e.preventDefault();
+                return;
+            }
+            if (miPuntaje === 0 && !nombreValido(nombreInput.value)) {
+                e.preventDefault();
+                bloqueNombre.classList.remove('d-none');
+                errorNombre.classList.remove('d-none');
+                nombreInput.focus();
             }
         });
     </script>
