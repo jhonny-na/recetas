@@ -5,8 +5,9 @@
     "fields": {
         "nombre": "Galletas de mantequilla",
         "categoria": "otros",
-        "ingredientes": "-250gr mantequilla \r\n-200gr az�car flor\r\n-1 huevo\r\n-1cdta de vainilla\r\n-500gr harina",
-        "preparacion": "Cremar la mantequilla, agregar el huevo junto al az�car flor y la escencia de vainilla, unir todo y agregar la harina hasta formar una masa homog�nea, dejar en el congelador por 1 hrs y hornear a 180�C x 10-15 min.",
+        "chef": "",
+        "ingredientes": "-250gr mantequilla \r\n-200gr azúcar flor\r\n-1 huevo\r\n-1cdta de vainilla\r\n-500gr harina",
+        "preparacion": "Cremar la mantequilla, agregar el huevo junto al azúcar flor y la escencia de vainilla, unir todo y agregar la harina hasta formar una masa homogénea, dejar en el congelador por 1 hrs y hornear a 180°C x 10-15 min.",
         "imagen": "recetas/california-butter-cookies.jpg",
         "fecha_creacion": "2026-09-16T00:52:10.624Z",
         "tiempo_preparacion": "",
@@ -21,8 +22,9 @@
     "fields": {
         "nombre": "Calzones rotos",
         "categoria": "otros",
-        "ingredientes": "-4 huevos\r\n-1kg harina\r\n-250gr de az�car\r\n-3cdta de polvos de hornear \r\n-125gr de margarina\r\n-Ceste de lim�n \r\n-500gr de leche\r\n-10gr escencia de vainilla",
-        "preparacion": "Hacer un volc�n con la harina y agregar todos los ingredientes, amasar hasta que sea una masa homog�nea, dejar reposar por 20 min aprox.",
+        "chef": "",
+        "ingredientes": "-4 huevos\r\n-1kg harina\r\n-250gr de azúcar\r\n-3cdta de polvos de hornear \r\n-125gr de margarina\r\n-Ceste de limón \r\n-500gr de leche\r\n-10gr escencia de vainilla",
+        "preparacion": "Hacer un volcán con la harina y agregar todos los ingredientes, amasar hasta que sea una masa homogénea, dejar reposar por 20 min aprox.",
         "imagen": "recetas/images_9.jpg",
         "fecha_creacion": "2026-09-16T01:04:33.401Z",
         "tiempo_preparacion": "",
@@ -37,8 +39,9 @@
     "fields": {
         "nombre": "Pan amasado",
         "categoria": "otros",
-        "ingredientes": "-1kg harina\r\n-10gr az�car\r\n-20gr levadura\r\n-500gr agua tibia \r\n-160gr manteca T� ambiente\r\nDORA:\r\n-1 huevo\r\n-30 gr leche",
-        "preparacion": "Entibiar la leche y agregar la az�car junto a la levadura dejar que fermente. Hacer un v",
+        "chef": "",
+        "ingredientes": "-1kg harina\r\n-10gr azúcar\r\n-20gr levadura\r\n-500gr agua tibia \r\n-160gr manteca T° ambiente\r\nDORA:\r\n-1 huevo\r\n-30 gr leche",
+        "preparacion": "Entibiar la leche y agregar la azúcar junto a la levadura dejar que fermente. Hacer un v",
         "imagen": "recetas/images_1_dXsMCcd.jpg",
         "fecha_creacion": "2026-09-16T01:14:54.973Z",
         "tiempo_preparacion": "",
@@ -53,8 +56,9 @@
     "fields": {
         "nombre": "Pajaritos",
         "categoria": "otros",
-        "ingredientes": "Tangzhong:\r\n- 30 gr harina\r\n- 150 gr leche\r\n\r\nMasa:\r\n- 470 gr harina\r\n- 120 gr az�car\r\n- 9 gr levadura\r\n- 2 huevos\r\n- 120 gr leche\r\n- 80 gr mantequilla pomada\r\n- 1 cdta vainilla\r\n- Ralladura de lim�n o naranja\r\n- 180 gr tangzhong\r\n\r\nMerengue: 2x1 az�car",
-        "preparacion": "1. Preparar el tangzhong: mezclar 30 gr de harina con 150 gr de leche, llevar a fuego y dejar enfriar.\r\n2. Mezclar todos los ingredientes de la masa junto con el tangzhong ya fr�o.\r\n3. Dejar fermentar por 2 hrs.\r\n4. Hornear a 180�C por 8-10 min.",
+        "chef": "",
+        "ingredientes": "Tangzhong:\r\n- 30 gr harina\r\n- 150 gr leche\r\n\r\nMasa:\r\n- 470 gr harina\r\n- 120 gr azúcar\r\n- 9 gr levadura\r\n- 2 huevos\r\n- 120 gr leche\r\n- 80 gr mantequilla pomada\r\n- 1 cdta vainilla\r\n- Ralladura de limón o naranja\r\n- 180 gr tangzhong\r\n\r\nMerengue: 2x1 azúcar",
+        "preparacion": "1. Preparar el tangzhong: mezclar 30 gr de harina con 150 gr de leche, llevar a fuego y dejar enfriar.\r\n2. Mezclar todos los ingredientes de la masa junto con el tangzhong ya frío.\r\n3. Dejar fermentar por 2 hrs.\r\n4. Hornear a 180°C por 8-10 min.",
         "imagen": "recetas/images_bv4pX6P.jpg",
         "fecha_creacion": "2026-09-16T20:34:51.318Z",
         "tiempo_preparacion": "",
@@ -69,8 +73,9 @@
     "fields": {
         "nombre": "Hojarascas de Alfajores",
         "categoria": "pasteleria",
-        "ingredientes": "- 210 gr harina\r\n- 100 gr mantequilla, fr�a\r\n- 90 ml leche\r\n- 2 yemas\r\n- 1 cdta pisco",
-        "preparacion": "1. Unir todos los ingredientes hasta formar una masa homog�nea.\r\n2. Refrigerar por 1 hr.\r\n3. Estirar, cortar y hornear a 180�C por 10-15 min.",
+        "chef": "",
+        "ingredientes": "- 210 gr harina\r\n- 100 gr mantequilla, fría\r\n- 90 ml leche\r\n- 2 yemas\r\n- 1 cdta pisco",
+        "preparacion": "1. Unir todos los ingredientes hasta formar una masa homogénea.\r\n2. Refrigerar por 1 hr.\r\n3. Estirar, cortar y hornear a 180°C por 10-15 min.",
         "imagen": "recetas/1-47-scaled.webp",
         "fecha_creacion": "2026-09-16T20:35:07.013Z",
         "tiempo_preparacion": "",
@@ -85,8 +90,9 @@
     "fields": {
         "nombre": "Conchas Mexicanas",
         "categoria": "panaderia",
-        "ingredientes": "Masa de Conchas Mexicanas:\r\n500 gr Harina\r\n15 gr Levadura\r\n100 gr Az�car\r\n7 gr Sal\r\n4 Huevos\r\n150 ml Leche tibia\r\n150 gr Mantequilla\r\n1 1/2 cdta de Esencia de Vainilla\r\n--------------------------------------\r\nCobertura de Concha:\r\n\r\n150 gr Mantequilla\r\n150 gr Az�car flor\r\n100 gr Harina",
-        "preparacion": "Prefermento:\r\n150 gr Harina\r\n50 gr Az�car\r\n10 gr Levadura\r\n100 gr Leche",
+        "chef": "",
+        "ingredientes": "Masa de Conchas Mexicanas:\r\n500 gr Harina\r\n15 gr Levadura\r\n100 gr Azúcar\r\n7 gr Sal\r\n4 Huevos\r\n150 ml Leche tibia\r\n150 gr Mantequilla\r\n1 1/2 cdta de Esencia de Vainilla\r\n--------------------------------------\r\nCobertura de Concha:\r\n\r\n150 gr Mantequilla\r\n150 gr Azúcar flor\r\n100 gr Harina",
+        "preparacion": "Prefermento:\r\n150 gr Harina\r\n50 gr Azúcar\r\n10 gr Levadura\r\n100 gr Leche",
         "imagen": "recetas/concha-20.jpg",
         "fecha_creacion": "2026-09-17T20:35:14.583Z",
         "tiempo_preparacion": "",
@@ -101,8 +107,9 @@
     "fields": {
         "nombre": "Pan Ciabbata",
         "categoria": "panaderia",
-        "ingredientes": "1 kilo harina\r\n10 gr levadura\r\n40 gr aceite de oliva\r\n20 gr sal\r\n700 gr agua a T� ambiente",
-        "preparacion": "30 min de reposo. 3 veces cada 30 min, 4 pliegues. Reposar 60 min. Hornear 200�C x 20 min, agregando agua.",
+        "chef": "",
+        "ingredientes": "1 kilo harina\r\n10 gr levadura\r\n40 gr aceite de oliva\r\n20 gr sal\r\n700 gr agua a T° ambiente",
+        "preparacion": "30 min de reposo. 3 veces cada 30 min, 4 pliegues. Reposar 60 min. Hornear 200°C x 20 min, agregando agua.",
         "imagen": "recetas/20210603142552ciabatta.jpg",
         "fecha_creacion": "2026-09-17T20:38:56.246Z",
         "tiempo_preparacion": "",
@@ -117,8 +124,9 @@
     "fields": {
         "nombre": "Berlines con Crema Pastelera",
         "categoria": "pasteleria",
-        "ingredientes": "Tangzhong:\r\n25 gr harina\r\n125 gr leche entera\r\n---------------------------------\r\nMasa:\r\n\r\nTangzhong fr�o\r\n475 gr harina\r\n100 gr az�car\r\n9 gr levadura seca\r\n1 huevo + 1 yema\r\n150 gr leche tibia\r\n50 gr mantequilla blanda\r\n1 cdta de vainilla",
-        "preparacion": "La mantequilla se agrega despu�s de formar la masa, hasta punto ventana. Levar 1-2 hrs, formar bolitas de 65-70 gr y levar x 30-50 min. Hornear 12-15 min a 170�C.",
+        "chef": "",
+        "ingredientes": "Tangzhong:\r\n25 gr harina\r\n125 gr leche entera\r\n---------------------------------\r\nMasa:\r\n\r\nTangzhong frío\r\n475 gr harina\r\n100 gr azúcar\r\n9 gr levadura seca\r\n1 huevo + 1 yema\r\n150 gr leche tibia\r\n50 gr mantequilla blanda\r\n1 cdta de vainilla",
+        "preparacion": "La mantequilla se agrega después de formar la masa, hasta punto ventana. Levar 1-2 hrs, formar bolitas de 65-70 gr y levar x 30-50 min. Hornear 12-15 min a 170°C.",
         "imagen": "recetas/sddefault.jpg",
         "fecha_creacion": "2026-09-17T20:39:27.357Z",
         "tiempo_preparacion": "",
@@ -131,9 +139,10 @@
     "model": "recetasApp.receta",
     "pk": 16,
     "fields": {
-        "nombre": "Crema de Pi�ones",
+        "nombre": "Crema de Piñones",
         "categoria": "otros",
-        "ingredientes": "Pi�ones, aceite de oliva, crema, sal",
+        "chef": "",
+        "ingredientes": "Piñones, aceite de oliva, crema, sal",
         "preparacion": "Cocer y saltear en aceite de oliva. Triturar con crema, sal y aceite para emulsionar, y colar.",
         "imagen": "recetas/images_1.jpg",
         "fecha_creacion": "2026-09-17T20:39:49.202Z",
@@ -149,8 +158,9 @@
     "fields": {
         "nombre": "Galletas de Harina Tostada",
         "categoria": "pasteleria",
-        "ingredientes": "125 gr mantequilla\r\n90 gr az�car\r\n1 huevo\r\n125 gr harina tostada\r\n125 gr harina\r\n5 gr polvo de hornear\r\n5 gr esencia de vainilla",
-        "preparacion": "Hornear 12 min a 180�C.",
+        "chef": "",
+        "ingredientes": "125 gr mantequilla\r\n90 gr azúcar\r\n1 huevo\r\n125 gr harina tostada\r\n125 gr harina\r\n5 gr polvo de hornear\r\n5 gr esencia de vainilla",
+        "preparacion": "Hornear 12 min a 180°C.",
         "imagen": "recetas/images_YZ8yqzc.jpg",
         "fecha_creacion": "2026-09-17T20:40:17.248Z",
         "tiempo_preparacion": "",
@@ -165,8 +175,9 @@
     "fields": {
         "nombre": "Tomahawk",
         "categoria": "almuerzos",
-        "ingredientes": "Mantequilla, ajo, perejil, sal, ajo y jugo de lim�n",
-        "preparacion": "Aprox. 6 min por lado a fuego directo, y despu�s a fuego indirecto envuelto en aluminio.",
+        "chef": "",
+        "ingredientes": "Mantequilla, ajo, perejil, sal, ajo y jugo de limón",
+        "preparacion": "Aprox. 6 min por lado a fuego directo, y después a fuego indirecto envuelto en aluminio.",
         "imagen": "recetas/Tomahawk-image001.jpg",
         "fecha_creacion": "2026-09-17T20:40:35.371Z",
         "tiempo_preparacion": "",
@@ -181,7 +192,8 @@
     "fields": {
         "nombre": "Chimichurri",
         "categoria": "otros",
-        "ingredientes": "Perejil\r\n3 dientes de ajo\r\n1 cda sal\r\n2 cda or�gano\r\n1 cda merk�n / paprika\r\n1/3 vaso agua tibia\r\n1/2 vaso vinagre\r\n1 vaso aceite\r\n1 pedazo de carb�n ahumado",
+        "chef": "",
+        "ingredientes": "Perejil\r\n3 dientes de ajo\r\n1 cda sal\r\n2 cda orégano\r\n1 cda merkén / paprika\r\n1/3 vaso agua tibia\r\n1/2 vaso vinagre\r\n1 vaso aceite\r\n1 pedazo de carbón ahumado",
         "preparacion": "Mezclar todos los ingredientes.",
         "imagen": "recetas/Chimichurri-receta.webp",
         "fecha_creacion": "2026-09-17T20:40:53.351Z",
@@ -197,8 +209,9 @@
     "fields": {
         "nombre": "Papa Rellena",
         "categoria": "almuerzos",
-        "ingredientes": "Papa, aceite, sal, pimienta, agua\r\nRelleno: ceboll�n, piment�n, aceituna, queso philadelphia, queso parmesano, mostaza, mantequilla, tocino",
-        "preparacion": "Hornear la papa con aceite, sal, pimienta y agua a 200�C x 40 min. Sofre�r el resto de los ingredientes, retirar un poco de pulpa de la papa, agregar la mezcla y m�s queso, y gratinar al horno. Envolver en aluminio x 20 min aprox.",
+        "chef": "",
+        "ingredientes": "Papa, aceite, sal, pimienta, agua\r\nRelleno: cebollín, pimentón, aceituna, queso philadelphia, queso parmesano, mostaza, mantequilla, tocino",
+        "preparacion": "Hornear la papa con aceite, sal, pimienta y agua a 200°C x 40 min. Sofreír el resto de los ingredientes, retirar un poco de pulpa de la papa, agregar la mezcla y más queso, y gratinar al horno. Envolver en aluminio x 20 min aprox.",
         "imagen": "recetas/papa_rellena_peruana_78092_1200_EpWi7QT.jpg",
         "fecha_creacion": "2026-09-17T20:41:08.303Z",
         "tiempo_preparacion": "",
@@ -211,10 +224,11 @@
     "model": "recetasApp.receta",
     "pk": 21,
     "fields": {
-        "nombre": "Kuchen Sure�o",
+        "nombre": "Kuchen Sureño",
         "categoria": "postres",
-        "ingredientes": "Masa:\r\n50 gr mantequilla\r\n60 gr az�car\r\n1 cdta vainilla\r\n1 huevo\r\n100 gr harina\r\n1/2 cdta polvos de hornear\r\n20 ml leche\r\n-------------------------\r\nRelleno:\r\n\r\n700 ml leche\r\n70 gr maicena\r\n150 gr az�car\r\n1 cdta vainilla\r\n1 cdta jugo de lim�n\r\n400 gr fruta\r\n-----------------------------------\r\nMiga:\r\n\r\n130 gr harina\r\n80 gr az�car\r\n1 cdta vainilla\r\n80 gr mantequilla",
-        "preparacion": "No ven�a anotada",
+        "chef": "",
+        "ingredientes": "Masa:\r\n50 gr mantequilla\r\n60 gr azúcar\r\n1 cdta vainilla\r\n1 huevo\r\n100 gr harina\r\n1/2 cdta polvos de hornear\r\n20 ml leche\r\n-------------------------\r\nRelleno:\r\n\r\n700 ml leche\r\n70 gr maicena\r\n150 gr azúcar\r\n1 cdta vainilla\r\n1 cdta jugo de limón\r\n400 gr fruta\r\n-----------------------------------\r\nMiga:\r\n\r\n130 gr harina\r\n80 gr azúcar\r\n1 cdta vainilla\r\n80 gr mantequilla",
+        "preparacion": "No venía anotada",
         "imagen": "recetas/kuchen-del-sur-1080-1080.webp",
         "fecha_creacion": "2026-09-17T20:42:02.020Z",
         "tiempo_preparacion": "",
@@ -229,8 +243,9 @@
     "fields": {
         "nombre": "Palomitas con Caramelo",
         "categoria": "otros",
-        "ingredientes": "100 gr palomitas\r\n180 gr az�car\r\n40 gr agua\r\n1 chorro de aceite",
-        "preparacion": "No ven�a anotada",
+        "chef": "",
+        "ingredientes": "100 gr palomitas\r\n180 gr azúcar\r\n40 gr agua\r\n1 chorro de aceite",
+        "preparacion": "No venía anotada",
         "imagen": "recetas/images.jpg",
         "fecha_creacion": "2026-09-17T20:42:20.212Z",
         "tiempo_preparacion": "",
@@ -243,10 +258,11 @@
     "model": "recetasApp.receta",
     "pk": 23,
     "fields": {
-        "nombre": "Queque de Pl�tano",
+        "nombre": "Queque de Plátano",
         "categoria": "panaderia",
-        "ingredientes": "3 huevos\r\n300 gr az�car\r\n1 pizca de sal\r\n2 cdta esencia de vainilla\r\n182 gr aceite\r\n345 gr leche\r\n257 gr pur� de pl�tano\r\n563 gr harina\r\n30 gr polvo de hornear\r\n100 gr chips de chocolate",
-        "preparacion": "No ven�a anotada",
+        "chef": "",
+        "ingredientes": "3 huevos\r\n300 gr azúcar\r\n1 pizca de sal\r\n2 cdta esencia de vainilla\r\n182 gr aceite\r\n345 gr leche\r\n257 gr puré de plátano\r\n563 gr harina\r\n30 gr polvo de hornear\r\n100 gr chips de chocolate",
+        "preparacion": "No venía anotada",
         "imagen": "recetas/20210908144313queque-de-platano-y-mantequilla-de-almendras-sin-gluten.jpg",
         "fecha_creacion": "2026-09-17T20:42:41.032Z",
         "tiempo_preparacion": "",
@@ -261,64 +277,15 @@
     "fields": {
         "nombre": "Empolvados (16 unidades)",
         "categoria": "pasteleria",
-        "ingredientes": "4 claras\r\n3 yemas\r\n120 gr az�car flor\r\n100 gr harina\r\n20 gr maicena\r\n1 cdta vainilla",
-        "preparacion": "Hornear a 190�C x 8-10 min.",
+        "chef": "",
+        "ingredientes": "4 claras\r\n3 yemas\r\n120 gr azúcar flor\r\n100 gr harina\r\n20 gr maicena\r\n1 cdta vainilla",
+        "preparacion": "Hornear a 190°C x 8-10 min.",
         "imagen": "recetas/91ae3430b7b2a5682e0278e41ba1e102.avif",
         "fecha_creacion": "2026-09-17T20:42:56.791Z",
         "tiempo_preparacion": "",
         "porciones": null,
         "dificultad": "",
         "favorito": false
-    }
-},
-{
-    "model": "recetasApp.valoracion",
-    "pk": 1,
-    "fields": {
-        "receta": 24,
-        "nombre": "jhonny",
-        "puntaje": 5,
-        "fecha": "2026-09-18T22:14:13.961Z"
-    }
-},
-{
-    "model": "recetasApp.valoracion",
-    "pk": 2,
-    "fields": {
-        "receta": 19,
-        "nombre": "jhonny",
-        "puntaje": 4,
-        "fecha": "2026-09-18T22:23:43.778Z"
-    }
-},
-{
-    "model": "recetasApp.valoracion",
-    "pk": 3,
-    "fields": {
-        "receta": 9,
-        "nombre": "jhonny",
-        "puntaje": 5,
-        "fecha": "2026-09-18T22:25:51.527Z"
-    }
-},
-{
-    "model": "recetasApp.valoracion",
-    "pk": 6,
-    "fields": {
-        "receta": 19,
-        "nombre": "catalina",
-        "puntaje": 5,
-        "fecha": "2026-09-19T20:53:44.314Z"
-    }
-},
-{
-    "model": "recetasApp.valoracion",
-    "pk": 7,
-    "fields": {
-        "receta": 24,
-        "nombre": "catalina",
-        "puntaje": 5,
-        "fecha": "2026-09-19T21:01:04.051Z"
     }
 }
 ]
