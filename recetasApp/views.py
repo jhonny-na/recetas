@@ -8,12 +8,14 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db.models import Avg, Count
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from .models import (
     Receta,
     Valoracion,
+    Comentario,
     CATEGORIA_CHOICES,
     CHEF_CHOICES,
     normalizar_nombre,
@@ -126,6 +128,10 @@ def detalle_receta(request, receta_id):
         'aviso': request.session.pop('aviso_voto', None),
         'aviso_nombre': request.session.pop('aviso_nombre', None),
         'conflicto': request.session.pop('conflicto_voto', None),
+        'comentarios': receta.comentarios.all(),
+        'mis_comentarios': request.session.get('comentarios', []),
+        'aviso_comentario': request.session.pop('aviso_comentario', None),
+        'borrador_comentario': request.session.pop('borrador_comentario', ''),
     })
 
 
@@ -161,12 +167,79 @@ def cambiar_nombre(request):
                 continue
             voto.nombre = nuevo
             voto.save()
+
+        # También se corrige el nombre en los comentarios hechos desde este navegador
+        ids = request.session.get('comentarios', [])
+        if ids:
+            for c in Comentario.objects.filter(id__in=ids):
+                c.nombre = nuevo
+                c.save()
     else:
         votos = {}
+        request.session['comentarios'] = []
 
     request.session['votos'] = votos
     request.session['nombre_votante'] = nuevo
     return _volver(request)
+
+
+@require_POST
+def quitar_nombre(request):
+    """
+    Quita el nombre de este navegador. Sin nombre no se puede votar ni comentar.
+    Los votos y comentarios ya publicados se quedan como están.
+    """
+    request.session.pop('nombre_votante', None)
+    request.session['votos'] = {}
+    request.session['comentarios'] = []
+    return _volver(request)
+
+
+@require_POST
+def comentar_receta(request, receta_id):
+    receta = get_object_or_404(Receta, id=receta_id)
+    destino = f"{reverse('detalle_receta', args=[receta.id])}#comentarios"
+
+    nombre = request.session.get('nombre_votante', '')
+    texto = request.POST.get('texto', '').strip()[:500]
+
+    if not nombre:
+        request.session['aviso_comentario'] = 'Pon tu nombre y apellido para poder comentar.'
+        request.session['borrador_comentario'] = texto
+        return redirect(destino)
+
+    try:
+        validar_nombre_completo(nombre)
+    except ValidationError as e:
+        request.session['aviso_comentario'] = e.messages[0]
+        request.session['borrador_comentario'] = texto
+        return redirect(destino)
+
+    if not texto:
+        request.session['aviso_comentario'] = 'Escribe un comentario antes de enviarlo.'
+        return redirect(destino)
+
+    comentario = Comentario.objects.create(receta=receta, nombre=nombre, texto=texto)
+    ids = request.session.get('comentarios', [])
+    ids.append(comentario.id)
+    request.session['comentarios'] = ids
+    return redirect(destino)
+
+
+@require_POST
+def borrar_comentario(request, comentario_id):
+    comentario = get_object_or_404(Comentario, id=comentario_id)
+    receta_id = comentario.receta_id
+    ids = request.session.get('comentarios', [])
+
+    # Lo puede borrar quien lo escribió (desde este navegador) o quien tenga la sesión de edición
+    if comentario.id in ids or request.session.get('autenticado'):
+        comentario.delete()
+        if comentario.id in ids:
+            ids.remove(comentario.id)
+            request.session['comentarios'] = ids
+
+    return redirect(f"{reverse('detalle_receta', args=[receta_id])}#comentarios")
 
 
 @require_POST
