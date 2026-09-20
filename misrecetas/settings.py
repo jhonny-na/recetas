@@ -133,4 +133,4 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Clave de acceso para poder agregar, editar y eliminar recetas
-CLAVE_ACCESO = "Catalina2670"
+CLAVE_ACCESO = "Bizcochito"
