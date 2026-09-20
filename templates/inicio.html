@@ -228,7 +228,7 @@
                             <div class="form-check mt-3">
                                 <input class="form-check-input" type="checkbox" name="corregir" value="1" id="checkCorregir" checked>
                                 <label class="form-check-label" for="checkCorregir">
-                                    Me equivoqué al escribirlo: corregir también mis votos anteriores
+                                    Me equivoqué al escribirlo: corregir también mis votos y comentarios anteriores
                                 </label>
                             </div>
                             <div class="form-text">
@@ -238,6 +238,13 @@
                     </div>
 
                     <div class="modal-footer">
+                        {% if nombre_guardado %}
+                        <button type="submit" formaction="{% url 'quitar_nombre' %}" formnovalidate
+                                class="btn btn-outline-danger me-auto"
+                                onclick="return confirm('¿Quitar tu nombre de este navegador? Ya no podrás votar ni comentar hasta ponerlo de nuevo. Tus votos y comentarios ya publicados se quedan con tu nombre: quítalos antes si no quieres que aparezcan.');">
+                            Quitar mi nombre
+                        </button>
+                        {% endif %}
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-success">Guardar nombre</button>
                     </div>
