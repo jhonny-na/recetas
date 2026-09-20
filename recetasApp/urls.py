@@ -12,4 +12,5 @@ urlpatterns = [
     path('logout/', views.cerrar_sesion, name='cerrar_sesion'),
     path('favorito/<int:receta_id>/', views.toggle_favorito, name='toggle_favorito'),
     path('valorar/<int:receta_id>/', views.valorar_receta, name='valorar_receta'),
+    path('cambiar-nombre/', views.cambiar_nombre, name='cambiar_nombre'),
 ]
