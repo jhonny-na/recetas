@@ -42,6 +42,11 @@
             color: #fff;
             border-color: #2f7a4f;
         }
+        .btn-chef.active {
+            background-color: #c99a2e;
+            color: #1b1b1b;
+            border-color: #c99a2e;
+        }
         .top-nav {
             display: flex;
             justify-content: space-between;
@@ -51,6 +56,14 @@
             padding-bottom: 15px;
             border-bottom: 2px solid rgba(255,255,255,0.2);
             margin-bottom: 25px;
+        }
+        .saludo-nombre {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            background: rgba(255,255,255,0.12);
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin: 0;
         }
         .btn-favorito {
             position: absolute;
@@ -83,7 +96,13 @@
         <div class="container text-white">
             <div class="top-nav">
                 <h4 class="titulo-elegante mb-0">🍽️ Recetas</h4>
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 align-items-center flex-wrap">
+                    {% if nombre_guardado %}
+                        <p class="saludo-nombre">Hola, {{ nombre_guardado }} 👋</p>
+                    {% endif %}
+                    <button type="button" class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#modalNombre">
+                        ✏️ {% if nombre_guardado %}Cambiar nombre{% else %}Poner mi nombre{% endif %}
+                    </button>
                     {% if request.session.autenticado %}
                         <a href="{% url 'cerrar_sesion' %}" class="btn btn-outline-light btn-sm">Cerrar sesión</a>
                     {% else %}
@@ -110,12 +129,13 @@
                         <option value="valoradas" {% if orden_actual == 'valoradas' %}selected{% endif %}>Mejor valoradas</option>
                     </select>
                     {% if categoria_actual %}<input type="hidden" name="categoria" value="{{ categoria_actual }}">{% endif %}
+                    {% if chef_actual %}<input type="hidden" name="chef" value="{{ chef_actual }}">{% endif %}
                     {% if solo_favoritas %}<input type="hidden" name="favoritas" value="1">{% endif %}
                     <button type="submit" class="btn btn-success">Buscar</button>
                 </div>
             </form>
 
-            {% if query or categoria_actual or solo_favoritas %}
+            {% if query or categoria_actual or chef_actual or solo_favoritas %}
             <div class="text-center mb-2">
                 <a href="{% url 'lista_recetas' %}" class="btn btn-outline-light btn-sm">✕ Limpiar filtros</a>
             </div>
@@ -126,18 +146,31 @@
                 {{ total_recetas }} receta{{ total_recetas|pluralize }}
             </div>
 
-            <!-- Categorías + favoritas (combinan con búsqueda y orden) -->
-            <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
-                <a href="?orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if solo_favoritas %}&favoritas=1{% endif %}"
+            <!-- Categorías + favoritas (combinan con búsqueda, chef y orden) -->
+            <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+                <a href="?orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if chef_actual %}&chef={{ chef_actual|urlencode }}{% endif %}{% if solo_favoritas %}&favoritas=1{% endif %}"
                    class="btn btn-outline-light btn-categoria {% if not categoria_actual %}active{% endif %}">Todas</a>
 
                 {% for valor, nombre in categorias %}
-                    <a href="?categoria={{ valor }}&orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if solo_favoritas %}&favoritas=1{% endif %}"
+                    <a href="?categoria={{ valor }}&orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if chef_actual %}&chef={{ chef_actual|urlencode }}{% endif %}{% if solo_favoritas %}&favoritas=1{% endif %}"
                        class="btn btn-outline-light btn-categoria {% if categoria_actual == valor %}active{% endif %}">{{ nombre }}</a>
                 {% endfor %}
 
-                <a href="?orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if categoria_actual %}&categoria={{ categoria_actual }}{% endif %}{% if not solo_favoritas %}&favoritas=1{% endif %}"
+                <a href="?orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if categoria_actual %}&categoria={{ categoria_actual }}{% endif %}{% if chef_actual %}&chef={{ chef_actual|urlencode }}{% endif %}{% if not solo_favoritas %}&favoritas=1{% endif %}"
                    class="btn btn-outline-light btn-categoria {% if solo_favoritas %}active{% endif %}">⭐ Favoritas</a>
+            </div>
+
+            <!-- Filtro por chef -->
+            <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 mb-5">
+                <span class="small opacity-75">👩‍🍳 Ver recetas de:</span>
+
+                <a href="?orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if categoria_actual %}&categoria={{ categoria_actual }}{% endif %}{% if solo_favoritas %}&favoritas=1{% endif %}"
+                   class="btn btn-outline-light btn-sm btn-chef {% if not chef_actual %}active{% endif %}">Todas las chefs</a>
+
+                {% for valor, nombre in chefs %}
+                    <a href="?chef={{ valor|urlencode }}&orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if categoria_actual %}&categoria={{ categoria_actual }}{% endif %}{% if solo_favoritas %}&favoritas=1{% endif %}"
+                       class="btn btn-outline-light btn-sm btn-chef {% if chef_actual == valor %}active{% endif %}">{{ nombre }}</a>
+                {% endfor %}
             </div>
 
             <!-- Tarjetas -->
@@ -173,6 +206,9 @@
                         {% endif %}
                         <div class="d-flex flex-wrap gap-2 mb-2">
                             <span class="badge bg-success">{{ receta.get_categoria_display }}</span>
+                            {% if receta.chef %}
+                                <span class="badge bg-warning text-dark">👩‍🍳 {{ receta.chef }}</span>
+                            {% endif %}
                             {% if receta.tiempo_preparacion %}
                                 <span class="badge bg-secondary">⏱️ {{ receta.tiempo_preparacion }}</span>
                             {% endif %}
@@ -198,5 +234,71 @@
             </div>
         </div>
     </div>
+
+    <!-- Ventana para cambiar el nombre -->
+    <div class="modal fade" id="modalNombre" tabindex="-1" aria-labelledby="modalNombreTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="post" action="{% url 'cambiar_nombre' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalNombreTitulo">
+                            {% if nombre_guardado %}Cambiar mi nombre{% else %}¿Cómo te llamas?{% endif %}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        {% if aviso_nombre %}
+                            <div class="alert alert-warning py-2">{{ aviso_nombre }}</div>
+                        {% endif %}
+
+                        <label for="inputNombre" class="form-label">Nombre y apellido</label>
+                        <input type="text"
+                               class="form-control"
+                               id="inputNombre"
+                               name="nombre"
+                               maxlength="100"
+                               required
+                               pattern="\S+(\s+\S+)+"
+                               title="Escribe tu nombre y apellido (por ejemplo: Juan Pérez)"
+                               placeholder="Ej: Juan Pérez"
+                               value="{{ nombre_guardado }}">
+                        <div class="form-text">
+                            Es obligatorio escribir el apellido para no confundirte con otra persona.
+                            "juan pérez" y "Juan Pérez" cuentan como el mismo nombre.
+                        </div>
+
+                        {% if nombre_guardado %}
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" name="corregir" value="1" id="checkCorregir" checked>
+                                <label class="form-check-label" for="checkCorregir">
+                                    Me equivoqué al escribirlo: corregir también mis votos anteriores
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Desmárcala si otra persona va a usar este navegador. Así empieza sin votos previos.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Guardar nombre</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% if aviso_nombre %}
+    <script>
+        // Si el nombre no era válido, se vuelve a abrir la ventana mostrando el aviso
+        new bootstrap.Modal(document.getElementById('modalNombre')).show();
+    </script>
+    {% endif %}
 </body>
 </html>
