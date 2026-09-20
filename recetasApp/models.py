@@ -25,7 +25,6 @@ def normalizar_nombre(nombre):
     """
     Limpia espacios de sobra y deja cada palabra con la primera letra en mayúscula.
     'juan   PÉREZ' -> 'Juan Pérez'
-    Así 'juan pérez' y 'JUAN PÉREZ' se guardan igual y cuentan como la misma persona.
     """
     return " ".join((nombre or "").split()).title()
 
@@ -80,3 +79,20 @@ class Valoracion(models.Model):
 
     def __str__(self):
         return f"{self.nombre}: {self.puntaje}★ en {self.receta.nombre}"
+
+
+class Comentario(models.Model):
+    receta = models.ForeignKey(Receta, related_name='comentarios', on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=100, validators=[validar_nombre_completo])
+    texto = models.TextField(max_length=500)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-fecha']
+
+    def save(self, *args, **kwargs):
+        self.nombre = normalizar_nombre(self.nombre)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.nombre} en {self.receta.nombre}"
