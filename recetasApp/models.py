@@ -17,7 +17,7 @@ DIFICULTAD_CHOICES = [
 
 CHEF_CHOICES = [
     ('Catalina', 'Catalina'),
-    ('Yesbay', 'Yesbay'),
+    ('Yesby', 'Yesby'),
 ]
 
 
