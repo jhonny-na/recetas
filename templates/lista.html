@@ -135,7 +135,7 @@
             <form method="GET" class="d-flex justify-content-center mb-2">
                 <div class="input-group" style="max-width: 640px;">
                     <span class="input-group-text bg-white">🔍</span>
-                    <input type="text" name="q" class="form-control" placeholder="Buscar receta por nombre..." value="{{ query }}">
+                    <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o ingrediente..." value="{{ query }}">
                     <select name="orden" class="form-select" style="max-width: 190px;" onchange="this.form.submit()">
                         <option value="recientes" {% if orden_actual == 'recientes' %}selected{% endif %}>Más recientes</option>
                         <option value="nombre" {% if orden_actual == 'nombre' %}selected{% endif %}>Nombre (A-Z)</option>
@@ -245,6 +245,21 @@
                 <p class="text-center">No se encontraron recetas.</p>
                 {% endfor %}
             </div>
+
+            <!-- Paginación -->
+            {% if recetas.has_other_pages %}
+            <div class="d-flex justify-content-center align-items-center gap-3 mt-5">
+                {% if recetas.has_previous %}
+                    <a href="?page={{ recetas.previous_page_number }}&orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if categoria_actual %}&categoria={{ categoria_actual }}{% endif %}{% if chef_actual %}&chef={{ chef_actual|urlencode }}{% endif %}{% if solo_favoritas %}&favoritas=1{% endif %}"
+                       class="btn btn-outline-light">← Anterior</a>
+                {% endif %}
+                <span class="small">Página {{ recetas.number }} de {{ recetas.paginator.num_pages }}</span>
+                {% if recetas.has_next %}
+                    <a href="?page={{ recetas.next_page_number }}&orden={{ orden_actual }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if categoria_actual %}&categoria={{ categoria_actual }}{% endif %}{% if chef_actual %}&chef={{ chef_actual|urlencode }}{% endif %}{% if solo_favoritas %}&favoritas=1{% endif %}"
+                       class="btn btn-outline-light">Siguiente →</a>
+                {% endif %}
+            </div>
+            {% endif %}
         </div>
     </div>
 
