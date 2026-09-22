@@ -202,8 +202,8 @@
                             <span class="btn-favorito" style="cursor:default;">⭐</span>
                         {% endif %}
 
-                        {% if receta.imagen %}
-                            <img src="{{ receta.imagen.url }}" class="img-fluid rounded mb-2" alt="{{ receta.nombre }}" style="height: 180px; width: 100%; object-fit: cover;">
+                        {% if receta.imagen_mostrar %}
+                            <img src="{{ receta.imagen_mostrar }}" class="img-fluid rounded mb-2" alt="{{ receta.nombre }}" style="height: 180px; width: 100%; object-fit: cover;">
                         {% else %}
                             <div class="rounded mb-2 d-flex align-items-center justify-content-center bg-secondary bg-opacity-25" style="height: 180px;">
                                 <span style="font-size: 2.5rem;">🍽️</span>
