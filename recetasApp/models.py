@@ -42,6 +42,8 @@ class Receta(models.Model):
     ingredientes = models.TextField()
     preparacion = models.TextField()
     imagen = models.ImageField(upload_to='recetas/', blank=True, null=True)
+    imagen_url = models.URLField(max_length=500, blank=True, null=True,
+                                  help_text="Opcional: pega el link de una foto que ya esté en internet, en vez de subir un archivo.")
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     tiempo_preparacion = models.CharField(max_length=50, blank=True, help_text="Ej: 30 min")
     porciones = models.PositiveIntegerField(blank=True, null=True)
@@ -50,6 +52,18 @@ class Receta(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    @property
+    def imagen_mostrar(self):
+        """
+        Devuelve la URL de la imagen a mostrar: primero el link externo si existe,
+        si no, la foto subida. Si no hay ninguna, devuelve None.
+        """
+        if self.imagen_url:
+            return self.imagen_url
+        if self.imagen:
+            return self.imagen.url
+        return None
 
     @property
     def promedio_valoracion(self):
