@@ -117,8 +117,8 @@
             </div>
 
             <div class="card bg-dark text-white shadow-lg p-4">
-                {% if receta.imagen %}
-                    <img src="{{ receta.imagen.url }}" class="foto-receta rounded mb-3" alt="{{ receta.nombre }}">
+                {% if receta.imagen_mostrar %}
+                    <img src="{{ receta.imagen_mostrar }}" class="foto-receta rounded mb-3" alt="{{ receta.nombre }}">
                 {% else %}
                     <div class="foto-vacia rounded mb-3 d-flex align-items-center justify-content-center bg-secondary bg-opacity-25">
                         <span style="font-size: 3rem;">🍽️</span>
