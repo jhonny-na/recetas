@@ -36,6 +36,7 @@
         }
         .form-card input[type="text"],
         .form-card input[type="number"],
+        .form-card input[type="url"],
         .form-card select,
         .form-card textarea {
             display: block;
@@ -65,6 +66,16 @@
             color: #ff6b6b;
             font-size: 0.85rem;
             margin-top: 4px;
+        }
+        .nota-imagen {
+            font-size: 0.85rem;
+            opacity: 0.75;
+            margin: 6px 0 14px;
+        }
+        .imagen-actual {
+            max-width: 220px;
+            border-radius: 10px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -127,11 +138,28 @@
                         {{ form.preparacion }}
                         {% for e in form.preparacion.errors %}<div class="error-campo">{{ e }}</div>{% endfor %}
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label">Imagen</label>
+
+                        {% if form.instance.imagen and not form.instance.imagen_url %}
+                            <div>
+                                <img src="{{ form.instance.imagen.url }}" class="imagen-actual" alt="Imagen actual">
+                            </div>
+                        {% endif %}
+
+                        <label class="form-label small">{{ form.imagen.label }}</label>
                         {{ form.imagen }}
                         {% for e in form.imagen.errors %}<div class="error-campo">{{ e }}</div>{% endfor %}
+
+                        <p class="nota-imagen">— o bien —</p>
+
+                        <label class="form-label small">{{ form.imagen_url.label }}</label>
+                        {{ form.imagen_url }}
+                        <p class="nota-imagen">Si pegas un link, se usará esa foto en vez de la que subas arriba.</p>
+                        {% for e in form.imagen_url.errors %}<div class="error-campo">{{ e }}</div>{% endfor %}
                     </div>
+
                     <div class="text-center mt-4 d-flex justify-content-center gap-2 flex-wrap">
                         <button type="submit" class="btn btn-success btn-lg">Guardar</button>
                         <a href="{% url 'lista_recetas' %}" class="btn btn-outline-light btn-lg">Cancelar</a>
