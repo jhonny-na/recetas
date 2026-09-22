@@ -1,13 +1,14 @@
 import math
 import secrets
 import time
+import unicodedata
 from functools import wraps
 
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -57,6 +58,17 @@ def _buscar_voto_por_nombre(receta, nombre):
     return None
 
 
+def _sin_tildes(texto):
+    """
+    Quita tildes y pone en minúsculas, para poder comparar 'platano' con 'plátano'.
+    """
+    texto = (texto or '').casefold()
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', texto)
+        if unicodedata.category(c) != 'Mn'
+    )
+
+
 def inicio(request):
     return render(request, 'inicio.html', {
         'nombre_guardado': request.session.get('nombre_votante', ''),
@@ -76,11 +88,6 @@ def lista_recetas(request):
         chef = ''
 
     recetas = Receta.objects.all()
-    if query:
-        # Busca coincidencias tanto en el nombre como en los ingredientes
-        recetas = recetas.filter(
-            Q(nombre__icontains=query) | Q(ingredientes__icontains=query)
-        )
     if categoria:
         recetas = recetas.filter(categoria=categoria)
     if chef:
@@ -98,7 +105,16 @@ def lista_recetas(request):
     else:
         recetas = recetas.order_by('-fecha_creacion')
 
-    total_recetas = recetas.count()
+    if query:
+        # Búsqueda en nombre e ingredientes, ignorando tildes y mayúsculas/minúsculas
+        clave = _sin_tildes(query)
+        recetas = [
+            r for r in recetas
+            if clave in _sin_tildes(r.nombre) or clave in _sin_tildes(r.ingredientes)
+        ]
+        total_recetas = len(recetas)
+    else:
+        total_recetas = recetas.count()
 
     # Paginación: 12 recetas por página
     paginator = Paginator(recetas, 12)
