@@ -6,7 +6,8 @@ from functools import wraps
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
-from django.db.models import Avg, Count
+from django.core.paginator import Paginator
+from django.db.models import Avg, Count, Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -76,7 +77,10 @@ def lista_recetas(request):
 
     recetas = Receta.objects.all()
     if query:
-        recetas = recetas.filter(nombre__icontains=query)
+        # Busca coincidencias tanto en el nombre como en los ingredientes
+        recetas = recetas.filter(
+            Q(nombre__icontains=query) | Q(ingredientes__icontains=query)
+        )
     if categoria:
         recetas = recetas.filter(categoria=categoria)
     if chef:
@@ -94,6 +98,13 @@ def lista_recetas(request):
     else:
         recetas = recetas.order_by('-fecha_creacion')
 
+    total_recetas = recetas.count()
+
+    # Paginación: 12 recetas por página
+    paginator = Paginator(recetas, 12)
+    numero_pagina = request.GET.get('page')
+    recetas = paginator.get_page(numero_pagina)
+
     return render(request, 'lista.html', {
         'recetas': recetas,
         'categorias': CATEGORIA_CHOICES,
@@ -102,7 +113,7 @@ def lista_recetas(request):
         'categoria_actual': categoria,
         'chef_actual': chef,
         'solo_favoritas': solo_favoritas,
-        'total_recetas': recetas.count(),
+        'total_recetas': total_recetas,
         'orden_actual': orden,
         'nombre_guardado': request.session.get('nombre_votante', ''),
         'aviso_nombre': request.session.pop('aviso_nombre', None),
